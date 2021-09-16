@@ -1,4 +1,5 @@
-from step01 import Variable
+from step01 import *
+
 
 class Function:
     def __call__(self, input):
