@@ -42,6 +42,21 @@ def add(x0, x1):
     return Add()(x0, x1)
 
 
+class Square(Function):
+    def forward(self, x):
+        y = x ** 2
+        return y
+
+    def backward(self, gy):
+        x = self.inputs[0].data
+        gx = 2 * x * gy
+        return gx
+
+
+def square(x):
+    return Square()(x)
+
+
 class Variable:
     def __init__(self, data):
         if data is not None:
