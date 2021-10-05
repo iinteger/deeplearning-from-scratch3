@@ -1,6 +1,7 @@
-# 변수 이름 추가
-# variable 클래스를 numpy array 쓰듯이 사용할 수 있도록 property 추가
-from step18 import *
+# 연산자 오버로드
+# Mul 클래스 구현
+
+from step19 import *
 
 
 class Add(Function):
@@ -16,28 +17,18 @@ def add(x0, x1):
     return Add()(x0, x1)
 
 
-class Function:
-    def __call__(self, *inputs):
-        xs = [x.data for x in inputs]  # 입력을 가변 길이 인수로 변경
-        ys = self.forward(*xs)  # 애스터리스크로 언팩
-        if not isinstance(ys, tuple):  # 튜플이 아니면 튜플로 묶어줌
-            ys = (ys, )
-        outputs = [Variable(as_array(y)) for y in ys]
+class Mul(Function):
+    def forward(self, x0, x1):
+        y = x0 * x1
+        return y
 
-        if Config.enable_backprop:  # 역전파가 활성화됐을때만
-            self.generation = max([x.generation for x in inputs])  # 입력 변수가 둘 이상일 때 가장 큰 generation을 가져옴
-            for output in outputs:
-                output.set_creator(self)
-            self.inputs = inputs
-            self.outputs = [weakref.ref(output) for output in outputs]
+    def backward(self, gy):
+        x0, x1 = self.inputs[0].data, self.inputs[1].data
+        return gy * x1, gy * x0
 
-        return outputs if len(outputs) > 1 else outputs[0]
 
-    def forward(self, xs):
-        raise NotImplementedError()
-
-    def backward(self, gys):
-        raise NotImplementedError()
+def mul(x0, x1):
+    return Mul()(x0, x1)
 
 
 class Variable:
@@ -119,8 +110,22 @@ class Variable:
         p = str(self.data).replace("\n", "\n"+' '*9)
         return "variable(" + p + ")"
 
+    def __mul__(self, other):
+        return mul(self, other)
+
+
 
 if __name__ == "__main__":
-    x = Variable(np.array([[1, 2, 3], [4, 5, 6]]))
-    print(len(x))
-    print(x)
+    a = Variable(np.array(3.0))
+    b = Variable(np.array(2.0))
+    y = a * b
+    print(y)
+
+    Variable.__mul__ = mul
+    Variable.__add__ = add
+
+    a = Variable(np.array(3.0))
+    b = Variable(np.array(2.0))
+    y = a + b
+    print(y)
+
