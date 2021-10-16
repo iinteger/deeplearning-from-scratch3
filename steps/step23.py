@@ -5,9 +5,10 @@ if '__file__' in globals():
 import numpy as np
 from dezero import Variable
 
-x = Variable(np.array(1.0))
-y = (x + 3) ** 2
-y.backward()
+if __name__ == "__main__":
+    x = Variable(np.array(1.0))
+    y = (x + 3) ** 2
+    y.backward()
 
-print(y)
-print(x.grad)
+    print(y)
+    print(x.grad)
