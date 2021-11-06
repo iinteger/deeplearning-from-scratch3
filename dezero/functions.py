@@ -8,7 +8,7 @@ class Sin(Function):
         return y
 
     def backward(self, gy):
-        x = self.inputs
+        x, = self.inputs
         gx = gy * cos(x)
         return gx
 
@@ -30,3 +30,4 @@ class Cos(Function):
 
 def cos(x):
     return Cos()(x)
+

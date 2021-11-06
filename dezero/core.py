@@ -86,22 +86,22 @@ class Variable:
 
         while funcs:
             f = funcs.pop()
-            gys = [output().grad for output in f.outputs]  # output is weakref
 
-            with using_config("enable_backprop", create_graph):
-                gxs = f.backward(*gys)
+            # 역전파 계산
+            gys = [output().grad for output in f.outputs]  # output is weakref 
+            gxs = f.backward(*gys)
 
-                if not isinstance(gxs, tuple):
-                    gxs = (gxs,)
+            if not isinstance(gxs, tuple):
+                gxs = (gxs,)
 
-                for x, gx in zip(f.inputs, gxs):
-                    if x.grad is None:
-                        x.grad = gx
-                    else:
-                        x.grad = x.grad + gx
+            for x, gx in zip(f.inputs, gxs):
+                if x.grad is None:
+                    x.grad = gx
+                else:
+                    x.grad = x.grad + gx
 
-                    if x.creator is not None:
-                        add_func(x.creator)
+                if x.creator is not None:
+                    add_func(x.creator)
 
             if not retain_grad:
                 for y in f.outputs:
@@ -124,6 +124,7 @@ class Function:
     def __call__(self, *inputs):
         inputs = [as_variable(x) for x in inputs]
 
+        # 순전파
         xs = [x.data for x in inputs]
         ys = self.forward(*xs)
         if not isinstance(ys, tuple):
