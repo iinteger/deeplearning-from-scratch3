@@ -1,3 +1,4 @@
+import dezero
 import weakref
 import numpy as np
 import contextlib
@@ -107,6 +108,17 @@ class Variable:
                 for y in f.outputs:
                     y().grad = None  # y is weakref
 
+    def reshape(self, *shape):
+        if len(shape) == 1 and isinstance(shape[0], (tuple, list)):
+            shape = shape[0]
+        return dezero.functions.reshape(self, shape)
+
+    def transpose(self):
+        return dezero.functions.transpose(self)
+
+    @property
+    def T(self):
+        return dezero.functions.transpose(self)
 
 def as_variable(obj):
     if isinstance(obj, Variable):
