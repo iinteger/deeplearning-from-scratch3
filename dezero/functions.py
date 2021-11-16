@@ -1,4 +1,6 @@
 import numpy as np
+import dezero
+from dezero import utils
 from dezero.core import Function
 from dezero.core import as_variable
 
@@ -81,7 +83,24 @@ def transpose(x):
     return Transpose()(x)
 
 
+class Sum(Function):
+    def __init__(self, axis, keepdims):
+        self.axis = axis
+        self.keepdims = keepdims
 
+    def forward(self, x):
+        self.x_shape = x.shape
+        y = x.sum(axis=self.axis, keepdims=self.keepdims)
+        return y
+
+    def backward(self, gy):
+        gy = utils.reshape_sum_backward(gy, self.x_shape, self.axis, self.keepdims)
+        gx = broadcast_to(gy, self.x_shape)
+        return gx
+
+
+def sum(x, axis=None, keepdims=False):
+    return Sum(axis, keepdims)(x)
 
 
 

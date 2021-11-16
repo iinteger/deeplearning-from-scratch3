@@ -120,6 +120,10 @@ class Variable:
     def T(self):
         return dezero.functions.transpose(self)
 
+    def sum(self, axis=None, keepdims=False):
+        return dezero.functions.sum(self, axis, keepdims)
+
+
 def as_variable(obj):
     if isinstance(obj, Variable):
         return obj
