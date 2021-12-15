@@ -174,7 +174,7 @@ class Add(Function):
         if self.x0_shape != self.x1_shape:
             gx0 = dezero.functions.sum_to(gx0, self.x0_shape)
             gx1 = dezero.functions.sum_to(gx1, self.x1_shape)
-        return gy, gy
+        return gx0, gx1
 
 
 def add(x0, x1):

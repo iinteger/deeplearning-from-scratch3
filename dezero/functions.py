@@ -1,8 +1,8 @@
 import numpy as np
 import dezero
-from dezero import utils
 from dezero.core import Function
 from dezero.core import as_variable
+from dezero import utils
 
 
 class Sin(Function):
@@ -89,7 +89,7 @@ class BroadcastTo(Function):
 
     def forward(self, x):
         self.x_shape = x.shape
-        y = np.braodcast_to(x, self.shape)
+        y = np.broadcast_to(x, self.shape)
         return y
 
     def backward(self, gy):
