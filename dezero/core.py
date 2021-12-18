@@ -163,6 +163,10 @@ class Function:
         raise NotImplementedError()
 
 
+class Parameter(Variable):
+    pass
+
+
 class Add(Function):
     def forward(self, x0, x1):
         self.x0_shape, self.x1_shape = x0.shape, x1.shape
