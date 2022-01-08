@@ -192,6 +192,22 @@ def linear_simple(x, W, b=None):
     return y
 
 
+class Sigmoid(Function):
+    def forward(self, x):
+        xp = cuda.get_array_module(x)
+        # y = 1 / (1 + xp.exp(-x))
+        y = xp.tanh(x * 0.5) * 0.5 + 0.5  # Better implementation
+        return y
+
+    def backward(self, gy):
+        y = self.outputs[0]()
+        gx = gy * y * (1 - y)
+        return gx
+
+
+def sigmoid(x):
+    return Sigmoid()(x)
+
 def sigmoid_simple(x):
     x = as_variable(x)
     y = 1 / (1 + exp(-x))
