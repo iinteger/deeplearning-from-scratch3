@@ -13,7 +13,7 @@ class Layer:
             self._params.add(name)
         super().__setattr__(name, value)
 
-    def __ceil__(self, *inputs):
+    def __call__(self, *inputs):
         outputs = self.forward(*inputs)
         if not isinstance(outputs, tuple):
             outputs = (outputs, )
