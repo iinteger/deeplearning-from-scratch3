@@ -1,7 +1,8 @@
 import numpy as np
 import dezero
 from dezero import cuda, utils
-from dezero.core import Function
+from dezero.core import Function, as_array
+from dezero.core import Variable
 from dezero.core import as_variable
 from dezero import utils
 
@@ -330,3 +331,12 @@ class Clip(Function):
 
 def clip(x, x_min, x_max):
     return Clip(x_min, x_max)(x)
+
+
+def accuracy(y, t):
+    y, t = as_variable(y), as_variable(t)
+
+    pred = y.data.argmax(axis=1).reshape(t.shape)
+    result = (pred == t.data)
+    acc = result.mean()
+    return Variable(as_array(acc))
